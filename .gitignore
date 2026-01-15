@@ -1,0 +1,33 @@
+# --- Python / Backend ---
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+# Ignore all generated data but keep the folder structure if needed
+data/input/*
+data/intermediate/*
+data/output/*
+data/state/serial_tracker.txt
+!data/**/.gitkeep
+
+# --- React / Frontend ---
+frontend/*
+frontend/node_modules/
+frontend/build/
+frontend/.pnp
+frontend/.pnp.js
+
+# --- Environment & Secrets ---
+.env
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

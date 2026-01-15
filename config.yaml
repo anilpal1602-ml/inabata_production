@@ -1,0 +1,19 @@
+base_dir: /Users/anilpal/Documents/Inabata_Production
+
+data:
+  input:
+    invoice_pdf: "data/input/SID0275879 STI - EPTE (CI).pdf"
+    packing_pdf: "data/input/SID0275879 STI - EPTE (PL).pdf"
+
+  intermediate:
+    extracted_json: "data/intermediate/extracted.json"
+
+  output:
+    final_excel_dir: "data/output"
+
+  templates:
+    pib_template: "data/templates/PIB_TEMPLATE.xlsx"
+
+  reference:
+    customer_list: "data/reference/LIST_OF_CUSTOMER.xlsx"
+    hs_code: "data/reference/HS_CODE.xlsx"
