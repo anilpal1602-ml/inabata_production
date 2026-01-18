@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 from difflib import get_close_matches
 from itertools import cycle
 from datetime import datetime
-
+from openpyxl.cell.cell import Cell
 # --------------------------------------------------
 # HELPERS
 # --------------------------------------------------
@@ -117,12 +117,13 @@ def process_customs_excel(input_excel_path, customer_ref_path, hs_code_path):
         hardcoded_7 = {
             "NOMOR IDENTITAS": "0010694040059000000000",
             "NAMA ENTITAS": "INABATA INDONESIA",
-            "ALAMAT ENTITAS": "KAWASAN INDUSTRI MM2100 JALAN BALI BLOK J-10, BEKASI",
+            "ALAMAT ENTITAS": "KAWASAN INDUSTRI MM2100 JALAN BALI BLOK J-10, KELURAHAN DESA GANDA MEKAR, KECAMATAN CIKARANG BARAT, KABUPATEN BEKASI, JAWA BARAT",
         }
 
         hardcoded_3 = {
             "NOMOR IDENTITAS": "0010694040059000000000",
             "NAMA ENTITAS": "INABATA INDONESIA",
+            "ALAMAT ENTITAS": "KAWASAN INDUSTRI MM2100 JALAN BALI BLOK J-10, KELURAHAN DESA GANDA MEKAR, KECAMATAN CIKARANG BARAT, KABUPATEN BEKASI, JAWA BARAT",
             "NIB ENTITAS": "9120101260717",
             "NOMOR IJIN ENTITAS": "3/KM.4/WBC.08/2025",
         }
@@ -153,24 +154,51 @@ def process_customs_excel(input_excel_path, customer_ref_path, hs_code_path):
                 for k, v in hardcoded_3.items():
                     if k in cols:
                         ws.cell(r, cols[k]).value = v
+        
+
+       
+        # 🔒 Force single source of truth for AJU (as TEXT)
+        # 🔒 Force single source of truth for AJU (Excel-safe TEXT)
+        if header_nomor_aju and "NOMOR AJU" in cols:
+            aju_col = cols["NOMOR AJU"]
+
+            for r in range(2, ws.max_row + 1):
+                cell = ws.cell(r, aju_col)
+
+                # Step 1: clear existing value and type
+                cell.value = None
+
+                # Step 2: force cell type to string
+                cell.data_type = "s"
+
+                # Step 3: assign value as string
+                cell.value = str(header_nomor_aju)      
+
+
 
     # ---------------------------------------------------------
     # SHEET: DOKUMEN
     # ---------------------------------------------------------
+    # ---------------------------------------------------------
+# SHEET: DOKUMEN
+# ---------------------------------------------------------
     if "DOKUMEN" in wb.sheetnames:
         ws = wb["DOKUMEN"]
         cols = get_col_indices(ws)
         doc_cycle = cycle([380, 217, 630])
 
         for r in range(2, ws.max_row + 1):
-            # Only process rows that look like they have data (check SERI)
-            if "SERI" in cols and ws.cell(r, cols.get("SERI")).value:
+            # Process any non-empty row
+            if any(ws.cell(r, c).value for c in cols.values()):
                 if header_nomor_aju and "NOMOR AJU" in cols:
                     ws.cell(r, cols["NOMOR AJU"]).value = header_nomor_aju
+
                 if header_tanggal_pernyataan and "TANGGAL DOKUMEN" in cols:
                     ws.cell(r, cols["TANGGAL DOKUMEN"]).value = header_tanggal_pernyataan
+
                 if "KODE DOKUMEN" in cols:
                     ws.cell(r, cols["KODE DOKUMEN"]).value = next(doc_cycle)
+
     # -------------------------------------------------------------
     # SHEET: PENGANGKUT (NEW)
     # ---------------------------------------------------------

@@ -2,8 +2,8 @@ base_dir: /Users/anilpal/Documents/Inabata_Production
 
 data:
   input:
-    invoice_pdf: "data/input/SID0275879 STI - EPTE (CI).pdf"
-    packing_pdf: "data/input/SID0275879 STI - EPTE (PL).pdf"
+    invoice_pdf: "data/input/data/input/INV SID0276864 - IKPI- EPTE. REV.pdf"
+    packing_pdf: "data/input/data/input/PL SID0276864 - IKPI- EPTE. REV.pdf"
 
   intermediate:
     extracted_json: "data/intermediate/extracted.json"

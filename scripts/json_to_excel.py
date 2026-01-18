@@ -15,7 +15,7 @@ if os.path.exists(CONFIG_PATH):
         config = yaml.safe_load(f)
         BASE_DIR = config["base_dir"]
         OUTPUT_DIR = os.path.join(BASE_DIR, config["data"]["output"]["final_excel_dir"])
-        SERIAL_TRACKER_PATH = os.path.join(BASE_DIR, "data/state/serial_tracker.txt")
+        SERIAL_TRACKER_PATH = os.path.join(BASE_DIR, "state/serial_tracker.txt")
 else:
     # Fallback/Default if config not found immediately (helpful for testing)
     BASE_DIR = os.path.dirname(__file__)
@@ -40,7 +40,7 @@ def get_next_serial_number(tracker_path, fallback_serial):
     if current_serial == 0 and str(fallback_serial).isdigit():
         current_serial = int(fallback_serial)
 
-    new_serial = current_serial + 1
+    new_serial = current_serial
 
     os.makedirs(os.path.dirname(tracker_path), exist_ok=True)
     with open(tracker_path, "w") as f:

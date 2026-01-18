@@ -8,7 +8,6 @@ __pycache__/
 data/input/*
 data/intermediate/*
 data/output/*
-data/state/serial_tracker.txt
 !data/**/.gitkeep
 
 # --- React / Frontend ---
