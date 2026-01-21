@@ -72,9 +72,13 @@ CRITICAL RULES
 - Seri - If seri infomation is not there then use serial number starting from 1. 
 - HS CODE: Look for 39094010 or similar at the bottom of descriptions and map to HS.
 - NAMA PENGANGKUT will be like TRUCK etc
-- In Units use KGM.
+- In KODE SATUAN check for these entries {'ST', 'KGM', 'MTR','RO'}
+- In KODE SATUAN if "SHT" then replace it with 'ST'
 - In ENTITAS, Receipents of goods and only one row entry expected
 - If missing: Use ""
+- HEADER: BRUTO - Gross weight or quatity from Invoice 
+- HEADER: NETTO - Net Weight or quantity from Invoice
+
 """
 
 

@@ -17,3 +17,4 @@ data:
   reference:
     customer_list: "data/reference/LIST_OF_CUSTOMER.xlsx"
     hs_code: "data/reference/HS_CODE.xlsx"
+    data_chem: "/Users/anilpal/Documents/Inabata_Production/data/reference/DATA_CHEM.xlsx"
