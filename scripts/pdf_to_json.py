@@ -48,8 +48,8 @@ Example:
   ],
   "BARANG": [
     ["HS", "KODE BARANG", "URAIAN"],
-    ["85171300", "SAP001", "Smartphone A"],
-    ["85171300", "SAP002", "Smartphone B"]
+    ["85171300", "SAP001", "188920100 FILM, TANK, REEL"],
+    ["39094010", "MA00041845", "PHENOLIC MOLD PM-9820JR BLK SF7-0"]
   ]
 }
 
@@ -65,20 +65,40 @@ SHEET DEFINITIONS AND COLUMNS
 ==================================================
 CRITICAL RULES
 ==================================================
-- Date Format: YYYY-MM-DD
-- Numeric values: Digits only (no commas or currency symbols)
-- SAP CODE: Look for MA00041841 or similar at the bottom of descriptions and map to KODE BARANG.
-- Multiple Rows: BARANG have a sub-list for EVERY item found and DOKUMEN should have 3 sub-list for each documents like Invoice, packing list and GRN. GRN entries should be same as invoice.
-- Seri - If seri infomation is not there then use serial number starting from 1. 
-- HS CODE: Look for 39094010 or similar at the bottom of descriptions and map to HS.
-- NAMA PENGANGKUT will be like TRUCK etc
-- In KODE SATUAN check for these entries {'ST', 'KGM', 'MTR','RO'}
-- In KODE SATUAN if "SHT" then replace it with 'ST'
-- In ENTITAS, Receipents of goods and only one row entry expected
-- If missing: Use ""
-- HEADER: BRUTO - Gross weight or quatity from Invoice 
-- HEADER: NETTO - Net Weight or quantity from Invoice
+1. URAIAN (Description) Extraction Logic:
+   - The URAIAN is the primary line of text describing the item.
+   - **Step 1 (Remove Index):** IGNORE any leading single/double digit index numbers (like '1' or '2') and whitespace at the very beginning of the line.
+   - **Step 2 (Identify Format):**
+     * *Format A (Numeric Start):* If the line contains a 9-digit numeric code (e.g., 188920100) after the index, start the URAIAN with that code.
+       (Example: "1 188920100 FILM, TANK..." -> "188920100 FILM, TANK...")
+     * *Format B (Text Start):* If the line starts with text (e.g., PHENOLIC MOLD), capture the text as is.
+       (Example: "1 PHENOLIC MOLD..." -> "PHENOLIC MOLD...")
+   - **Step 3 (Single Line Only):** STRICTLY IGNORE any text on subsequent lines. Stop extracting at the end of the first physical line. 
+     (Example: Ignore "SOLVENT", "PHENOLIC RESIN", or HS codes like "39094010" if they appear on the line below the main description).
 
+2. Numeric & Quantity Parsing (European/Indonesian Format):
+   - CRITICAL: Interpret DOT (.) as the THOUSANDS separator.
+   - CRITICAL: Interpret COMMA (,) as the DECIMAL separator.
+   - Examples: 
+     * "5.000" means 5000 (Five Thousand).
+     * "1.000" means 1000 (One Thousand).
+     * "139,00" means 139.0.
+     * "16,89" means 16.89.
+     * "2.224,00" means 2224.0.
+   - Output format: Standard integer or float (e.g., 5000 or 16.89).
+
+3. General Rules:
+   - Date Format: YYYY-MM-DD
+   - SAP CODE: Look for MA00041841 or similar at the bottom of descriptions and map to KODE BARANG.
+   - Multiple Rows: BARANG have a sub-list for EVERY item found.
+   - DOKUMEN: Create 3 sub-lists for each document: Invoice, Packing List, and GRN. GRN entries should be the same as invoice.
+   - Seri: If seri information is not there, use serial number starting from 1.
+   - HS CODE: Look for 39094010 or similar at the bottom of descriptions and map to HS.
+   - NAMA PENGANGKUT: should be always "TRUCK".
+   - KODE SATUAN: Check for {'ST', 'KGM', 'MTR', 'RO'}. If "SHT" then replace it with 'ST'.
+   - ENTITAS: Recipients of goods, only one row entry expected.
+   - HEADER BRUTO/NETTO: Extract Gross/Net weight or quantity from Invoice.
+   - If missing: Use ""
 """
 
 
